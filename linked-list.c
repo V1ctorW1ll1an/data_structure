@@ -15,7 +15,7 @@ int empty(struct Node *list) {
     return (list == NULL);
 }
 
-void insert(struct Node **listRef, struct Node **tail, struct Data data) {
+void insert(struct Node **listRef, struct Node **last, struct Data data) {
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
     newNode->data = data;
     newNode->prox = NULL;
@@ -23,116 +23,116 @@ void insert(struct Node **listRef, struct Node **tail, struct Data data) {
     // primeiro a ser inserido
     if (empty(*listRef)) {
         (*listRef) = newNode;
-        (*tail) = newNode;
+        (*last) = newNode;
         return;
     }
     // se nao for insere na ultima posição
-    (*tail)->prox = newNode;
-    (*tail) = newNode;
+    (*last)->prox = newNode;
+    (*last) = newNode;
 }
 
 void printData(struct Data data) {
     printf("%d\n", data.number);
 }
 
-void printList(struct Node *node) {
+void printList(struct Node *list) {
     // system("clear");
     printf("\n\n");
-    if (empty(node)) {
+    if (empty(list)) {
         printf("\nLista vazia!\n\n");
         return;
     }
 
-    while (node != NULL) {
-        printData(node->data);
-        node = node->prox;
+    while (list != NULL) {
+        printData(list->data);
+        list = list->prox;
     }
 }
 
-void delete (struct Node **headRef, struct Node **tail, struct Data data) {
-    struct Node *increment = (*headRef), *previous;
+void delete (struct Node **listRef, struct Node **last, struct Data data) {
+    struct Node *current = (*listRef), *previous;
 
     // verificar se a lista esta vazia
-    if (empty(*headRef)) {
+    if (empty(*listRef)) {
         printf("\nLista vazia!\n");
         return;
     }
 
     // apagando se for a primeira posição
-    if (increment && increment->data.number == data.number) {
-        (*headRef) = increment->prox;
+    if (current && current->data.number == data.number) {
+        (*listRef) = current->prox;
         printf("\n\nDado deletado com sucesso: ");
-        printData(increment->data);
-        free(increment);
+        printData(current->data);
+        free(current);
         return;
     }
 
     // achar a referencia do dado
-    while (increment && !(increment->data.number == data.number)) {
+    while (current && !(current->data.number == data.number)) {
         // armazenando sempre o dado anterior
-        previous = increment;
-        increment = increment->prox;
+        previous = current;
+        current = current->prox;
     }
 
     // validar se o dado foi encontrado
-    if (!increment) {
+    if (!current) {
         printf("Dado nao encontrado!");
         return;
     }
 
     // pulando para a proxima referencia do dado
-    previous->prox = increment->prox;
+    previous->prox = current->prox;
 
-    // se for o ultimo entao mudamos a referencia do tail
-    if (increment->prox == NULL) {
-        (*tail)->prox = previous;
+    // se for o ultimo entao mudamos a referencia do last
+    if (current->prox == NULL) {
+        (*last)->prox = previous;
     }
 
     // system("clear");
 
     printf("\n\nDado deletado com sucesso: ");
-    printData(increment->data);
+    printData(current->data);
 
     // liberando o espaço usado no increment
-    free(increment);
+    free(current);
 }
 
-void searchByData(struct Node *head, struct Data data) {
-    if (empty(head)) {
+void searchByData(struct Node *list, struct Data data) {
+    if (empty(list)) {
         printf("Lista vazia!");
         return;
     }
-    while (head) {
-        if (head->data.number == data.number) {
+    while (list) {
+        if (list->data.number == data.number) {
             printf("\nDado encontrado: ");
-            printData(head->data);
+            printData(list->data);
             return;
         }
-        head = head->prox;
+        list = list->prox;
     }
     printf("\nDado não encontrado!\n");
 }
 
 int main(int argc, char const *argv[]) {
-    struct Node *head = NULL, *tail = NULL;
+    struct Node *list = NULL, *last = NULL;
     struct Data data;
 
     data.number = 100;
-    insert(&head, &tail, data);
+    insert(&list, &last, data);
     data.number = 101;
-    insert(&head, &tail, data);
+    insert(&list, &last, data);
     data.number = 102;
-    insert(&head, &tail, data);
+    insert(&list, &last, data);
     data.number = 103;
-    insert(&head, &tail, data);
-    printList(head);
+    insert(&list, &last, data);
+    printList(list);
 
     data.number = 103;
-    delete (&head, &tail, data);
+    delete (&list, &last, data);
 
-    printList(head);
+    printList(list);
 
     data.number = 101;
-    searchByData(head, data);
+    searchByData(list, data);
     return 0;
 }
